@@ -1,0 +1,102 @@
+<?php
+/**
+ * @file
+ * ALterations for the events site.
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function conditional_content_block_block_info() {
+  $blocks['live'] = array(
+    'info' => t('Conditional Text Block'),
+    'description' => t('A block with text message based upon role'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function conditional_content_block_block_configure($delta = '', $settings = array()) {
+  $form = array();
+  if ($delta == 'live') {
+    $settings += array(
+      'ccb_visitor_message' => 'Please login',
+      'ccb_user_message' => 'Please do something interesting',
+    );
+    $form['ccb_visitor_message'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Visitor text'),
+      '#default_value' => $settings['ccb_visitor_message']['value'],
+      '#description' => 'Provide text for unauthenticated users or site visitors.',
+      '#format' => $edit['ccb_visitor_message']['format'],
+      '#editor_uploads' => TRUE,
+      '#rows' => 8,
+    );
+    $form['ccb_user_message'] = array(
+      '#type' => 'text_format',
+      '#title' => t('User text'),
+      '#default_value' => $settings['ccb_user_message']['value'],
+      '#description' => 'Provide text for authenticated users.',
+    );
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function conditional_content_block_block_view($delta = '', $settings = array(), $contexts = array()) {
+  // This example is adapted from node.module.
+  $block = array();
+  $block_user_text = config_get('conditional_content_block.settings', 'user_message');
+  $block_visitor_text = config_get('conditional_content_block.settings', 'visitor_message');
+
+  switch ($delta) {
+    case 'live':
+      $title = t('Next Steps');
+
+      // $dd_visitor_message = check_markup($settings['ccb_visitor_message']['value']);
+      // $dd_user_message['content'] = check_markup($block_user_text['ccb_user_message']['value']);
+
+      $dd_user_message = $block_user_text['value'];
+      $dd_visitor_message = $block_visitor_text['value'];
+
+      dpm($dd_user_message);
+      global $user;
+      if (in_array('authenticated', $user->roles)) {
+        $markup = $dd_user_message;
+      } else {
+        $markup = $dd_visitor_message;
+      }
+      $block['subject'] = $title;
+      $block['content'] = array(
+        '#type' => 'markup',
+        '#markup' => $markup,
+      );
+      break;
+    }
+  return $block;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function conditional_content_block_block_save($delta, &$edit = array()) {
+  if ($delta == 'live') {
+    // Using this block to set global values used by related blocks.
+    config_set('conditional_content_block.settings', 'user_message', $edit['ccb_user_message']);
+    config_set('conditional_content_block.settings', 'visitor_message', $edit['ccb_visitor_message']);
+  }
+}
+
+
+      // $block_user_text['content'] = check_markup($block['ccb_user_message']['value'], $block['ccb_user_message']['format'], '', TRUE);
+
+      // $block_visitor_text['content'] = check_markup($block['ccb_visitor_message']['value'], $block['ccb_visitor_message']['format'], '', TRUE);
+
+      // $dd_visitor_message = $block_visitor_text['value'];
+
+      //$dd_user_message = check_markup($settings['ccb_user_message']['value']);
+
