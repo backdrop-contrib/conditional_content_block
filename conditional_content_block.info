@@ -1,5 +1,6 @@
-type = module
 name = Conditional Content Block
 description = Create content in block that is conditional based upon role.
+package = Other
+dependencies[] = block
 backdrop = 1.x
-
+type = module
