@@ -11,6 +11,8 @@ This module is in "proof of concept" stage. It works, but it's very simple and n
 input and feedback from the community. Also, it has not been properly tested yet
 and does have bugs.
 
+Pull Requests are welcome.
+
 Please, offer feedback and ideas in the [issue queue](/backdrop-contrib/conditional_text_block/issues).
 
 ## Installation
