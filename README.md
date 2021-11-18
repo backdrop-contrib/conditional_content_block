@@ -1,7 +1,7 @@
 # Conditional Text Block
 
 
-## DESCRIPTION
+## Description
 
 This is a very simple module that offers a block type called "Conditional Text Block"
 that offers two text fields. One field for unauthenticated users and another for 
@@ -20,11 +20,11 @@ Please, offer feedback and ideas in the [issue queue](/backdrop-contrib/conditio
 - Install this module using the official Backdrop CMS instructions at
   https://backdropcms.org/guide/modules.
 
-## CURRENT MAINTAINERS
+## Current maintainers
 
 - [Tim Erickson](https://github.com/stpaultim) - [Simplo](https://www.simplo.site) by [Triplo](https://www.triplo.co)
 
-## LICENSE   
+## License   
 
 This project is GPL v2 software. See the LICENSE.txt file in this directory 
 for complete text.
