@@ -8,12 +8,12 @@ that offers two text fields. One field for unauthenticated users and another for
 authenticated users.
 
 This module is in "proof of concept" stage. It works, but it's very simple and needs
-input and feedback from the community. Also, it has not been properly tested yet
-and does have bugs.
-
-Pull Requests are welcome.
+input and feedback from the community. We are relatively new to writing modules from
+scratch and not entirely sure what needs to go into a contrib module like this one.
 
 Please, offer feedback and ideas in the [issue queue](/backdrop-contrib/conditional_text_block/issues).
+
+Pull Requests are welcome.
 
 ## Installation
 
