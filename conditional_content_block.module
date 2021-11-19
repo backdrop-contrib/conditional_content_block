@@ -32,7 +32,7 @@ function conditional_content_block_block_configure($delta = '', $settings = arra
     );
     $form['ccb_title'] = array(
       '#type' => 'textfield',
-      '#title' => t('The title for your block.'),
+      '#title' => t('Block title'),
       '#default_value' => $settings['ccb_title'],
     );
     $form['ccb_first_role'] = array(
