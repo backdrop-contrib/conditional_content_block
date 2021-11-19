@@ -21,12 +21,13 @@ function conditional_content_block_block_info() {
 function conditional_content_block_block_configure($delta = '', $settings = array()) {
   $form = array();
   if ($delta == 'conditional') {
+    $roles = user_roles();
     $settings += array(
-      'ccb_visitor_message' => array(
-        'value' => 'Message for site visitors.',
+      'ccb_first_message' => array(
+        'value' => 'Default First Message.',
       ),
-      'ccb_user_message' => array(
-        'value' => 'Message for site users.',
+      'ccb_second_message' => array(
+        'value' => 'Default Second Message.',
       )
     );
     $form['ccb_title'] = array(
@@ -34,43 +35,64 @@ function conditional_content_block_block_configure($delta = '', $settings = arra
       '#title' => t('The title for your block.'),
       '#default_value' => $settings['ccb_title'],
     );
-    $form['ccb_visitor_message'] = array(
+    $form['ccb_first_role'] = array(
+      '#type' => 'select',
+      '#title' => 'First role',
+      '#options' => $roles,
+      '#default_value' => $settings['ccb_first_role'],
+    ); 
+    $form['ccb_first_message'] = array(
       '#type' => 'text_format',
-      '#title' => t('Visitor text'),
-      '#default_value' => $settings['ccb_visitor_message']['value'],
+      '#title' => t('First text'),
+      '#default_value' => $settings['ccb_first_message']['value'],
       '#description' => 'Provide text for unauthenticated users or site visitors.',
-      '#format' => $edit['ccb_visitor_message']['format'],
+      '#format' => $settings['ccb_first_message']['format'],
       '#editor_uploads' => TRUE,
       '#rows' => 8,
     );
-    $form['ccb_user_message'] = array(
+    $form['ccb_second_role'] = array(
+      '#type' => 'select',
+      '#title' => 'Second role',
+      '#options' => $roles,
+      '#default_value' => $settings['ccb_second_role'],
+    ); 
+    $form['ccb_second_message'] = array(
       '#type' => 'text_format',
-      '#title' => t('User text'),
-      '#default_value' => $settings['ccb_user_message']['value'],
+      '#title' => t('Second text'),
+      '#default_value' => $settings['ccb_second_message']['value'],
       '#description' => 'Provide text for authenticated users.',
+      '#format' => $settings['ccb_second_message']['format'],
+      '#editor_uploads' => TRUE,
+      '#rows' => 8,
     );
   }
   return $form;
 }
 
 /**
- * Implements hook_block_configure().
+ * Implements hook_block_view().
  */
 function conditional_content_block_block_view($delta = '', $settings = array(), $contexts = array()) {
   global $user;
-  $block = array();
-  $block_title = config_get('conditional_content_block.settings', 'title');
-  $block_user_text = config_get('conditional_content_block.settings', 'user_message');
-  $block_visitor_text = config_get('conditional_content_block.settings', 'visitor_message');
-  $dd_user_message = $block_user_text['value'];
-  $dd_visitor_message = $block_visitor_text['value'];
   switch ($delta) {
     case 'conditional':
+      $block = array();
+      $first_role = check_plain($settings['ccb_first_role']);
+      $second_role = check_plain($settings['ccb_second_role']);
+      $block_first_text = $settings['ccb_first_message'];
+      $block_second_text = $settings['ccb_second_message'];
+      $block_first_message = filter_xss_admin($block_first_text['value']);
+      $block_second_message = filter_xss_admin($block_second_text['value']);
       $title = t('Next Steps');
-      if (in_array('authenticated', $user->roles)) {
-        $markup = $dd_user_message;
-      } else {
-        $markup = $dd_visitor_message;
+      foreach ($user->roles as $role) {
+        if ($role == $first_role) {
+          $markup .= $block_first_message;
+        } elseif ($role == $second_role) {
+          $markup .= $block_second_message;
+        }
+        if ($first_role == $role || $second_role == $role) {
+          $block_title = check_plain($settings['ccb_title']);
+        }
       }
       $block['subject'] = $block_title;
       $block['content'] = array(
@@ -80,15 +102,4 @@ function conditional_content_block_block_view($delta = '', $settings = array(), 
       break;
     }
   return $block;
-}
-
-/**
- * Implements hook_block_save().
- */
-function conditional_content_block_block_save($delta, &$edit = array()) {
-  if ($delta == 'conditional') {
-    config_set('conditional_content_block.settings', 'title', $edit['ccb_title']);
-    config_set('conditional_content_block.settings', 'user_message', $edit['ccb_user_message']);
-    config_set('conditional_content_block.settings', 'visitor_message', $edit['ccb_visitor_message']);
-  }
 }
