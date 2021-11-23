@@ -9,8 +9,8 @@
  */
 function conditional_content_block_block_info() {
   $blocks['conditional'] = array(
-    'info' => t('Conditional Text Block'),
-    'description' => t('A block with text message based upon role.'),
+    'info' => t('Conditional Content Block'),
+    'description' => t('A block with content options based upon specific conditions (currently based upon role).'),
   );
   return $blocks;
 }
