@@ -1,8 +1,5 @@
 # Conditional Content Block
 
-
-## Description
-
 This is a very simple module that offers a block type called "Conditional Content Block"
 that offers two text fields (with WYSIWYG). The site editor is able to choose a single
 role that will have access to each field. The most common use case would be one message
